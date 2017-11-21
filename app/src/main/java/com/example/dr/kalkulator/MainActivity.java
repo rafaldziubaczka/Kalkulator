@@ -1,6 +1,5 @@
 package com.example.dr.kalkulator;
 
-import android.graphics.Path;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +14,6 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder exp;
     TextView expression;
     TextView result;
-    Stack<Double> numbers;
-    Stack<String> operators;
 
     boolean lastCharIsOperator = false;
     boolean isCommaInLastValue = false;
@@ -32,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     int closingBracketCount = 0;
     int openingBracketCount = 0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
         expression = (TextView) findViewById(R.id.expression);
         result = (TextView) findViewById(R.id.result);
         exp = new StringBuilder("0");
-        numbers = new Stack<>();
-        operators = new Stack<>();
         setButtons();
         updateExpression();
     }
@@ -51,34 +45,40 @@ public class MainActivity extends AppCompatActivity {
             exp.append("0");
         }
         Button b = (Button) view;
-        switch (OperatorEnum.valueOf2(b.getText().toString())) {
+        switch (OperatorEnum.valueOf2(b.getText().charAt(0))) {
             case ADDITION:
                 checkLastChar(OperatorEnum.ADDITION);
-                exp.append(OperatorEnum.ADDITION.toString());
+                exp.append(OperatorEnum.ADDITION.toCharacter());
                 break;
             case SUBTRACTION:
                 checkLastChar(OperatorEnum.SUBTRACTION);
-                exp.append(OperatorEnum.SUBTRACTION.toString());
+                exp.append(OperatorEnum.SUBTRACTION.toCharacter());
                 break;
             case MULTIPLICATION:
                 checkLastChar(OperatorEnum.MULTIPLICATION);
-                exp.append(OperatorEnum.MULTIPLICATION.toString());
+                exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
                 break;
             case DIVISION:
                 checkLastChar(OperatorEnum.DIVISION);
-                exp.append(OperatorEnum.DIVISION.toString());
+                exp.append(OperatorEnum.DIVISION.toCharacter());
                 break;
             case CLOSING_BRACKET:
-                exp.append(OperatorEnum.CLOSING_BRACKET.toString());
-                closingBracketCount--;
+                if (openingBracketCount > closingBracketCount) {
+                    if (OperatorEnum.isOperator(exp.charAt(exp.length() - 1))
+                            || ((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.OPENING_BRACKET.toCharacter())) {
+                        exp.append("0");
+                    }
+                    exp.append(OperatorEnum.CLOSING_BRACKET.toCharacter());
+                    closingBracketCount++;
+                }
                 break;
             case OPENING_BRACKET:
                 if (exp.length() == 1 && exp.toString().equals("0"))
                     exp.setLength(0);
-                else if (!OperatorEnum.isOperator(exp.substring(exp.length() - 1))
-                        || OperatorEnum.valueOf2(exp.substring(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET))
-                    exp.append(OperatorEnum.MULTIPLICATION.toString());
-                exp.append(OperatorEnum.OPENING_BRACKET.toString());
+                else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET))
+                    exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+                exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
                 openingBracketCount++;
                 break;
             default:
@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
         Button b = (Button) view;
         if (exp.length() == 1 && exp.toString().equals("0")) {
             exp.setLength(0);
-        } else if (exp.substring(exp.length() - 1).equals(OperatorEnum.CLOSING_BRACKET.toString())) {
-            exp.append(OperatorEnum.MULTIPLICATION);
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         }
         exp.append(b.getText());
         lastCharIsOperator = false;
@@ -107,22 +107,30 @@ public class MainActivity extends AppCompatActivity {
         exp.append("0");
         isCommaInLastValue = false;
         lastCharIsOperator = false;
+        openingBracketCount = 0;
+        closingBracketCount = 0;
         updateExpression();
+//        System.gc();
     }
 
     public void onClickBack(View view) {
         if (exp.substring(exp.length() - 1).equals(",")) {
             isCommaInLastValue = false;
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.OPENING_BRACKET.toCharacter())) {
+            openingBracketCount--;
+        }
+        if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())) {
+            closingBracketCount--;
         }
         exp.deleteCharAt(exp.length() - 1);
         if (exp.length() == 0) {
             exp.append("0");
-        } else if (OperatorEnum.isOperator(exp.substring(exp.length() - 1))) {
+        } else if (OperatorEnum.isOperator(exp.charAt(exp.length() - 1))) {
             isCommaInLastValue = false;
         } else {
             for (int i = exp.length(); i > 1; i--) {
-                String s = exp.substring(i - 1, i);
-                if (s.equals(",")) {
+                Character s = exp.charAt(i - 1);
+                if (s.equals(',')) {
                     isCommaInLastValue = true;
                     break;
                 } else if (OperatorEnum.isOperator(s)) {
@@ -135,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickComma(View view) {
-        if (OperatorEnum.isOperator(exp.substring(exp.length() - 1))) {
+        if (OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))) {
+            if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter()))
+                exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
             exp.append("0");
         }
         if (!isCommaInLastValue) {
@@ -149,17 +159,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkLastChar(OperatorEnum operator) {
-        if (OperatorEnum.isOperator(exp.substring(exp.length() - 1))) {
-            if (!OperatorEnum.SUBTRACTION.toString().equals(exp.substring(exp.length() - 1))
+        if (OperatorEnum.isOperator(exp.charAt(exp.length() - 1))) {
+            if (!OperatorEnum.SUBTRACTION.toCharacter().equals(exp.charAt(exp.length() - 1))
                     && !OperatorEnum.SUBTRACTION.equals(operator)) {
                 exp.deleteCharAt(exp.length() - 1);
-            } else if (!OperatorEnum.isOperator(exp.substring(exp.length() - 2, exp.length() - 1))
+            } else if (!OperatorEnum.isOperator(exp.charAt(exp.length() - 2))
                     && !OperatorEnum.SUBTRACTION.equals(operator)) {
                 exp.deleteCharAt(exp.length() - 1);
-            } else if (OperatorEnum.isOperator(exp.substring(exp.length() - 2, exp.length() - 1))) {
+            } else if (OperatorEnum.isOperator(exp.charAt(exp.length() - 2))) {
                 exp.deleteCharAt(exp.length() - 1);
                 exp.deleteCharAt(exp.length() - 1);
             }
+        }else if(((Character)exp.charAt(exp.length() - 1)).equals(OperatorEnum.OPENING_BRACKET.toCharacter())){
+            exp.append("0");
         }
     }
 
