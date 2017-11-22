@@ -47,6 +47,15 @@ public enum OperatorEnum {
         return false;
     }
 
+    public static boolean higherPriority(String o1, String o2) {
+        OperatorEnum operator1 = valueOf2(o1.charAt(0));
+        OperatorEnum operator2 = valueOf2(o2.charAt(0));
+        if(operator1.equals(OPENING_BRACKET)){
+            return true;
+        }
+        return operator1.priority > operator2.priority;
+    }
+
     public Character toCharacter() {
         return operator;
     }

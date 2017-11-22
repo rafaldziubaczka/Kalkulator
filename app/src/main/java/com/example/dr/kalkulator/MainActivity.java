@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         expression = (TextView) findViewById(R.id.expression);
         result = (TextView) findViewById(R.id.result);
         exp = new StringBuilder("0");
+        Calculator.setStack();
         setButtons();
         updateExpression();
     }
@@ -156,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickResult(View view) {
+        updateResult(true);
+        expression.setText(exp);
     }
 
     public void checkLastChar(OperatorEnum operator) {
@@ -170,12 +173,20 @@ public class MainActivity extends AppCompatActivity {
                 exp.deleteCharAt(exp.length() - 1);
                 exp.deleteCharAt(exp.length() - 1);
             }
-        }else if(((Character)exp.charAt(exp.length() - 1)).equals(OperatorEnum.OPENING_BRACKET.toCharacter())){
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.OPENING_BRACKET.toCharacter())
+                && !OperatorEnum.SUBTRACTION.equals(operator)) {
+            exp.append("0");
+        } else if (exp.length() == 1 && ((Character) exp.charAt(exp.length() - 1)).equals('0')
+                && OperatorEnum.SUBTRACTION.equals(operator)) {
+            exp.setLength(0);
+        }else if (exp.length() == 1 && ((Character) exp.charAt(exp.length() - 1)).equals('0')) {
+            exp.setLength(0);
             exp.append("0");
         }
     }
 
     public void updateExpression() {
+        updateResult(false);
         expression.setText(exp);
 
 //        addition.setEnabled(!lastCharIsOperator);
@@ -184,6 +195,37 @@ public class MainActivity extends AppCompatActivity {
 //        division.setEnabled(!lastCharIsOperator);
 
 //        comma.setEnabled(!isCommaInLastValue);
+    }
+
+    public void updateResult(boolean result) {
+        StringBuilder stringExp = new StringBuilder(exp);
+        int localOpeningBracketCount = openingBracketCount;
+        if (OperatorEnum.isOperator(stringExp.charAt(stringExp.length() - 1))) {
+            stringExp.deleteCharAt(stringExp.length() - 1);
+            if (stringExp.length() == 0)
+                stringExp.append("0");
+            if (OperatorEnum.isOperator(stringExp.charAt(stringExp.length() - 1))) {
+                stringExp.deleteCharAt(stringExp.length() - 1);
+            } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
+                stringExp.append("0");
+            }
+        } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
+            stringExp.deleteCharAt(stringExp.length() - 1);
+            localOpeningBracketCount--;
+            if (stringExp.length() == 0)
+                stringExp.append("0");
+            else
+                stringExp.deleteCharAt(stringExp.length() - 1);
+        } else if (((Character) stringExp.charAt(stringExp.length() - 1)).equals(','))
+            stringExp.append("0");
+        int count = localOpeningBracketCount - closingBracketCount;
+        while (count > 0) {
+            stringExp.append(OperatorEnum.CLOSING_BRACKET.toCharacter());
+            count--;
+        }
+        this.result.setText(Calculator.calculate(stringExp.toString()).toString());
+        if (result)
+            exp = stringExp;
     }
 
     public void setButtons() {
