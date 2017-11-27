@@ -2,14 +2,18 @@ package com.example.dr.kalkulator;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import java.util.Stack;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     StringBuilder exp;
     TextView expression;
@@ -25,9 +29,12 @@ public class MainActivity extends AppCompatActivity {
     Button comma;
     Button closingBracket;
     Button openingBracket;
+    Button pow;
 
     int closingBracketCount = 0;
     int openingBracketCount = 0;
+
+    ViewFlipper viewFlipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         Calculator.setStack();
         setButtons();
         updateExpression();
+        viewFlipper = (ViewFlipper)findViewById(R.id.viewFlipper);
     }
 
     public void onClickOperator(View view) {
@@ -210,11 +218,13 @@ public class MainActivity extends AppCompatActivity {
                 stringExp.append("0");
             }
         } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
-            stringExp.deleteCharAt(stringExp.length() - 1);
-            localOpeningBracketCount--;
-            if (stringExp.length() == 0)
-                stringExp.append("0");
-            else
+            while(OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))){
+                stringExp.deleteCharAt(stringExp.length() - 1);
+                localOpeningBracketCount--;
+                if (stringExp.length() == 0)
+                    stringExp.append("0");
+            }
+            if (stringExp.length() > 2)
                 stringExp.deleteCharAt(stringExp.length() - 1);
         } else if (((Character) stringExp.charAt(stringExp.length() - 1)).equals(','))
             stringExp.append("0");
@@ -224,8 +234,10 @@ public class MainActivity extends AppCompatActivity {
             count--;
         }
         this.result.setText(Calculator.calculate(stringExp.toString()).toString());
-        if (result)
+        if (result){
             exp = stringExp;
+            closingBracketCount =openingBracketCount;
+        }
     }
 
     public void setButtons() {
@@ -236,5 +248,23 @@ public class MainActivity extends AppCompatActivity {
         comma = (Button) findViewById(R.id.bComma);
         closingBracket = (Button) findViewById(R.id.bClosingBracket);
         openingBracket = (Button) findViewById(R.id.bOpeningBracket);
+        pow = (Button)findViewById(R.id.ButtonPow);
+        pow.setText(Html.fromHtml("x<sup><small>y</small></sup>"));
+    }
+
+    public void onClickHistory(View view) {
+        viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LHistory))));
+    }
+
+    public void onClickSave(View view) {
+        viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LSave))));
+    }
+
+    public void onClickFunctions(View view) {
+        viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LFunctions))));
+    }
+
+    public void onClickNumbers(View view) {
+        viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LNumbers))));
     }
 }

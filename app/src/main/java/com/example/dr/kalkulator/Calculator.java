@@ -34,8 +34,11 @@ public class Calculator {
                         calc();
                     }
                     if(!OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0))
-                            || OperatorEnum.OPENING_BRACKET.toCharacter().equals(operstorsFromStack.charAt(0)))
+                            || OperatorEnum.OPENING_BRACKET.toCharacter().equals(operstorsFromStack.charAt(0))){
                         operators.push(item);
+                        if (OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0)))
+                            calc();
+                    }
                 } else {
                     operators.push(item);
                 }

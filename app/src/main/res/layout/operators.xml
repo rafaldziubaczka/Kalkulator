@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="-5dp"
+    android:layout_marginTop="-5dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/bBack"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginLeft="-3dp"
+        android:layout_marginRight="-3dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:onClick="onClickBack"
+        android:text="←"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginRight="-3dp"
+        android:layout_marginLeft="-3dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:id="@+id/bDivision"
+        android:text="÷"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:onClick="onClickOperator"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginRight="-3dp"
+        android:layout_marginLeft="-3dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:id="@+id/bMultiplication"
+        android:text="×"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:onClick="onClickOperator"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginRight="-3dp"
+        android:layout_marginLeft="-3dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:id="@+id/bSubtraction"
+        android:text="-"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:onClick="onClickOperator"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginRight="-3dp"
+        android:layout_marginLeft="-3dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:id="@+id/bAddition"
+        android:text="+"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:onClick="onClickOperator"/>
+
+</LinearLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/LSave">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-5dp"
+        android:layout_marginTop="-5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bNumbers3"
+            android:text="N"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickNumbers" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bFunctions3"
+            android:text="F"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickFunctions"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bSave3"
+            android:text="S"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickSave"
+            android:backgroundTint="@color/colorPrimary"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bHistory3"
+            android:text="H"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickHistory"/>
+
+    </LinearLayout>
+
+</LinearLayout>

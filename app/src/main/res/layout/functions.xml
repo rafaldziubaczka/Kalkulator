@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/LFunctions">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-5dp"
+        android:layout_marginTop="-5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bNumbers2"
+            android:text="N"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickNumbers" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bFunctions2"
+            android:text="F"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickFunctions"
+            android:backgroundTint="@color/colorPrimary"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bSave2"
+            android:text="S"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickSave" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight=".25"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/bHistory2"
+            android:text="H"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:onClick="onClickHistory"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1.5dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-5dp"
+            android:layout_marginTop="-5dp"
+            android:layout_weight=".75"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginTop="-5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/bOpeningBracket"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="ln"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/bClosingBracket"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="log"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/bClear"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickClear"
+                    android:text="C"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginTop="-5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="sin"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/Button8"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="cos"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/Button9"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="tan"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginTop="-5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/Button4"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="π"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/Button5"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="e"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/Button6"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="x!"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginTop="-5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/ButtonPow"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/Button2"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="√"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/Button3"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="%"
+                    android:textSize="25dp"
+                    android:textAllCaps="false"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginTop="-5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/Button0"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickOperator"
+                    android:text="Rad"
+                    android:textSize="25dp"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/bComma"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickComma"
+                    android:text="EXP"
+                    android:textSize="25dp"/>
+
+                <Button
+                    android:id="@+id/bResult"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight=".25"
+                    android:onClick="onClickResult"
+                    android:text="="
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include
+            layout="@layout/operators"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-5dp"
+            android:layout_marginTop="-5dp"
+            android:layout_weight=".25" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
