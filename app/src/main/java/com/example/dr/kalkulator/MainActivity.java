@@ -12,8 +12,9 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import java.util.Stack;
+import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     StringBuilder exp;
     TextView expression;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity{
     Button openingBracket;
     Button pow;
 
+    Button rad;
+
     int closingBracketCount = 0;
     int openingBracketCount = 0;
 
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity{
         Calculator.setStack();
         setButtons();
         updateExpression();
-        viewFlipper = (ViewFlipper)findViewById(R.id.viewFlipper);
+        viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
     }
 
     public void onClickOperator(View view) {
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity{
             exp.append("0");
         }
         Button b = (Button) view;
-        switch (OperatorEnum.valueOf2(b.getText().charAt(0))) {
+        switch (OperatorEnum.valueOf2(b.getTag().toString().charAt(0))) {
             case ADDITION:
                 checkLastChar(OperatorEnum.ADDITION);
                 exp.append(OperatorEnum.ADDITION.toCharacter());
@@ -87,6 +90,20 @@ public class MainActivity extends AppCompatActivity{
                 else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
                         || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET))
                     exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+                exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
+                openingBracketCount++;
+                break;
+            case POWER:
+                checkLastChar(OperatorEnum.POWER);
+                exp.append(OperatorEnum.POWER.toCharacter());
+                break;
+            case SQUARE_ROOT:
+                if (exp.length() == 1 && exp.toString().equals("0"))
+                    exp.setLength(0);
+                else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET))
+                    exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+                exp.append(OperatorEnum.SQUARE_ROOT.toCharacter());
                 exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
                 openingBracketCount++;
                 break;
@@ -166,16 +183,16 @@ public class MainActivity extends AppCompatActivity{
 
     public void onClickResult(View view) {
         updateResult(true);
-        expression.setText(exp);
+        expression.setText(convertToView(exp.toString()));
     }
 
     public void checkLastChar(OperatorEnum operator) {
         if (OperatorEnum.isOperator(exp.charAt(exp.length() - 1))) {
-            if (!OperatorEnum.SUBTRACTION.toCharacter().equals(exp.charAt(exp.length() - 1))
-                    && !OperatorEnum.SUBTRACTION.equals(operator)) {
+            if ((!OperatorEnum.SUBTRACTION.toCharacter().equals(exp.charAt(exp.length() - 1))
+                    && !OperatorEnum.SUBTRACTION.equals(operator)) || exp.length() == 1) {
                 exp.deleteCharAt(exp.length() - 1);
-            } else if (!OperatorEnum.isOperator(exp.charAt(exp.length() - 2))
-                    && !OperatorEnum.SUBTRACTION.equals(operator)) {
+            } else if ((!OperatorEnum.isOperator(exp.charAt(exp.length() - 2))
+                    && !OperatorEnum.SUBTRACTION.equals(operator)) || OperatorEnum.OPENING_BRACKET.toCharacter().equals(exp.charAt(exp.length() - 2))) {
                 exp.deleteCharAt(exp.length() - 1);
             } else if (OperatorEnum.isOperator(exp.charAt(exp.length() - 2))) {
                 exp.deleteCharAt(exp.length() - 1);
@@ -187,7 +204,7 @@ public class MainActivity extends AppCompatActivity{
         } else if (exp.length() == 1 && ((Character) exp.charAt(exp.length() - 1)).equals('0')
                 && OperatorEnum.SUBTRACTION.equals(operator)) {
             exp.setLength(0);
-        }else if (exp.length() == 1 && ((Character) exp.charAt(exp.length() - 1)).equals('0')) {
+        } else if (exp.length() == 1 && ((Character) exp.charAt(exp.length() - 1)).equals('0')) {
             exp.setLength(0);
             exp.append("0");
         }
@@ -195,7 +212,7 @@ public class MainActivity extends AppCompatActivity{
 
     public void updateExpression() {
         updateResult(false);
-        expression.setText(exp);
+        expression.setText(convertToView(exp.toString()));
 
 //        addition.setEnabled(!lastCharIsOperator);
 //        subtraction.setEnabled(!lastCharIsOperator);
@@ -206,26 +223,34 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void updateResult(boolean result) {
-        StringBuilder stringExp = new StringBuilder(exp);
+        StringBuilder stringExp = new StringBuilder(exp.toString().replace("-(",
+                OperatorEnum.SUBTRACTION.toPrint() + "1" + OperatorEnum.MULTIPLICATION.toPrint() + OperatorEnum.OPENING_BRACKET.toPrint()));
         int localOpeningBracketCount = openingBracketCount;
-        if (OperatorEnum.isOperator(stringExp.charAt(stringExp.length() - 1))) {
-            stringExp.deleteCharAt(stringExp.length() - 1);
-            if (stringExp.length() == 0)
-                stringExp.append("0");
-            if (OperatorEnum.isOperator(stringExp.charAt(stringExp.length() - 1))) {
+        if (OperatorEnum.isOperatorWithBracket(stringExp.charAt(stringExp.length() - 1))) {
+            while (OperatorEnum.isOperatorWithBracket(stringExp.charAt(stringExp.length() - 1))
+                    && !OperatorEnum.CLOSING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
+                if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1)))
+                    localOpeningBracketCount--;
                 stringExp.deleteCharAt(stringExp.length() - 1);
-            } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
-                stringExp.append("0");
-            }
-        } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
-            while(OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))){
-                stringExp.deleteCharAt(stringExp.length() - 1);
-                localOpeningBracketCount--;
                 if (stringExp.length() == 0)
                     stringExp.append("0");
             }
-            if (stringExp.length() > 2)
-                stringExp.deleteCharAt(stringExp.length() - 1);
+
+//            if (OperatorEnum.isOperator(stringExp.charAt(stringExp.length() - 1))) {
+//                stringExp.deleteCharAt(stringExp.length() - 1);
+//            } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
+//                stringExp.append("0");
+//            }
+//        } else if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
+//            while(OperatorEnum.isOperatorWithBracket(stringExp.charAt(stringExp.length() - 1))){
+//                if(OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1)))
+//                    localOpeningBracketCount--;
+//                stringExp.deleteCharAt(stringExp.length() - 1);
+//                if (stringExp.length() == 0)
+//                    stringExp.append("0");
+//            }
+//            if (stringExp.length() > 2)
+//                stringExp.deleteCharAt(stringExp.length() - 1);
         } else if (((Character) stringExp.charAt(stringExp.length() - 1)).equals(','))
             stringExp.append("0");
         int count = localOpeningBracketCount - closingBracketCount;
@@ -234,9 +259,9 @@ public class MainActivity extends AppCompatActivity{
             count--;
         }
         this.result.setText(Calculator.calculate(stringExp.toString()).toString());
-        if (result){
+        if (result) {
             exp = stringExp;
-            closingBracketCount =openingBracketCount;
+            closingBracketCount = openingBracketCount;
         }
     }
 
@@ -248,8 +273,9 @@ public class MainActivity extends AppCompatActivity{
         comma = (Button) findViewById(R.id.bComma);
         closingBracket = (Button) findViewById(R.id.bClosingBracket);
         openingBracket = (Button) findViewById(R.id.bOpeningBracket);
-        pow = (Button)findViewById(R.id.ButtonPow);
+        pow = (Button) findViewById(R.id.ButtonPow);
         pow.setText(Html.fromHtml("x<sup><small>y</small></sup>"));
+        rad = (Button) findViewById(R.id.bRad);
     }
 
     public void onClickHistory(View view) {
@@ -266,5 +292,21 @@ public class MainActivity extends AppCompatActivity{
 
     public void onClickNumbers(View view) {
         viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LNumbers))));
+    }
+
+    private String convertToView(String expView) {
+        for (OperatorEnum o : OperatorEnum.values()) {
+            expView = expView.replaceAll(Pattern.quote(o.toCharacter().toString()), o.toPrint());
+        }
+        return expView;
+    }
+
+    public void onClickChangeRad(View view) {
+        Calculator.setRad(!Calculator.isRad());
+        if (Calculator.isRad()) {
+            rad.setText("Rad");
+        } else {
+            rad.setText("Deg");
+        }
     }
 }

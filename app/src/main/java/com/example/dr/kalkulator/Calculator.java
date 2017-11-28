@@ -15,9 +15,21 @@ public class Calculator {
     private static Stack<Double> numbers;
     private static Stack<String> operators;
 
+    private static boolean rad;
+
     public static void setStack() {
         numbers = new Stack<>();
         operators = new Stack<>();
+        rad = true;
+    }
+
+
+    public static boolean isRad() {
+        return rad;
+    }
+
+    public static void setRad(boolean rad) {
+        Calculator.rad = rad;
     }
 
     public static Double calculate(String exp) {
@@ -43,7 +55,11 @@ public class Calculator {
                     operators.push(item);
                 }
             } else {
-                numbers.push(Double.valueOf(item));
+                if(item.equals("π")){
+                    numbers.push(Math.PI);
+                } else{
+                    numbers.push(Double.valueOf(item));
+                }
             }
         }
         while (!operators.isEmpty()) {
@@ -79,6 +95,13 @@ public class Calculator {
                 }
                 break;
             case OPENING_BRACKET:
+                break;
+            case POWER:
+                result = numbers.pop();
+                result = Math.pow(numbers.pop(),result);
+                break;
+            case SQUARE_ROOT:
+                result = Math.sqrt(numbers.pop());
                 break;
             default:
                 Log.d("calc", "Brak operatora.Błąd obliczenia.");

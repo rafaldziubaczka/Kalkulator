@@ -94,7 +94,8 @@
                     android:onClick="onClickOperator"
                     android:text="ln"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="n"/>
 
                 <Button
                     android:id="@+id/bClosingBracket"
@@ -106,7 +107,8 @@
                     android:onClick="onClickOperator"
                     android:text="log"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="l"/>
 
                 <Button
                     android:id="@+id/bClear"
@@ -138,7 +140,8 @@
                     android:onClick="onClickOperator"
                     android:text="sin"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="s"/>
 
                 <Button
                     android:id="@+id/Button8"
@@ -150,7 +153,8 @@
                     android:onClick="onClickOperator"
                     android:text="cos"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="c"/>
 
                 <Button
                     android:id="@+id/Button9"
@@ -162,7 +166,8 @@
                     android:onClick="onClickOperator"
                     android:text="tan"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="t"/>
 
 
             </LinearLayout>
@@ -181,10 +186,11 @@
                     android:layout_marginLeft="-3dp"
                     android:layout_marginRight="-3dp"
                     android:layout_weight=".25"
-                    android:onClick="onClickOperator"
+                    android:onClick="onClickNumber"
                     android:text="π"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="π"/>
 
                 <Button
                     android:id="@+id/Button5"
@@ -193,10 +199,11 @@
                     android:layout_marginLeft="-3dp"
                     android:layout_marginRight="-3dp"
                     android:layout_weight=".25"
-                    android:onClick="onClickOperator"
+                    android:onClick="onClickNumber"
                     android:text="e"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="e"/>
 
                 <Button
                     android:id="@+id/Button6"
@@ -208,7 +215,8 @@
                     android:onClick="onClickOperator"
                     android:text="x!"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="!"/>
 
 
             </LinearLayout>
@@ -229,7 +237,8 @@
                     android:layout_weight=".25"
                     android:onClick="onClickOperator"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="^"/>
 
                 <Button
                     android:id="@+id/Button2"
@@ -241,7 +250,8 @@
                     android:onClick="onClickOperator"
                     android:text="√"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="√"/>
 
                 <Button
                     android:id="@+id/Button3"
@@ -253,7 +263,8 @@
                     android:onClick="onClickOperator"
                     android:text="%"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="%"/>
 
 
             </LinearLayout>
@@ -266,13 +277,13 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/Button0"
+                    android:id="@+id/bRad"
                     android:layout_width="0dp"
                     android:layout_height="55dp"
                     android:layout_marginLeft="-3dp"
                     android:layout_marginRight="-3dp"
                     android:layout_weight=".25"
-                    android:onClick="onClickOperator"
+                    android:onClick="onClickChangeRad"
                     android:text="Rad"
                     android:textSize="25dp"
                     android:textAllCaps="false" />
@@ -286,7 +297,8 @@
                     android:layout_weight=".25"
                     android:onClick="onClickComma"
                     android:text="EXP"
-                    android:textSize="25dp"/>
+                    android:textSize="25dp"
+                    android:tag="x"/>
 
                 <Button
                     android:id="@+id/bResult"
