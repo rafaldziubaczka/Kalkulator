@@ -7,33 +7,35 @@ import android.support.annotation.Nullable;
  */
 
 public enum OperatorEnum {
-    ADDITION("+", '+', 1, 2),
-    SUBTRACTION("-", '-', 1, 2),
-    MULTIPLICATION("×", '×', 2, 2),
-    DIVISION("÷", '÷', 2, 2),
-    CLOSING_BRACKET(")", ')', 1, 0),
-    OPENING_BRACKET("(", '(', 0, 0),
-    LOGARITHM_N("ln", 'n', 2, 1),
-    LOGARITHM("log", 'l', 2, 1),
-    SIN("sin", 's', 2, 1),
-    COS("cos", 'c', 2, 1),
-    TAN("tan", 't', 2, 1),
-    FACTORIAL("!", '!', 3, 1),
-    POWER("^", '^', 3, 2),
-    SQUARE_ROOT("√", '√', 2, 1),
-    PERCENT("%", '%', 2, 2),
-    DEFAULT(" ", ' ', -1, 0);
+    ADDITION("+", '+', 1, 2, false),
+    SUBTRACTION("-", '-', 1, 2, false),
+    MULTIPLICATION("×", '×', 2, 2, false),
+    DIVISION("÷", '÷', 2, 2, false),
+    CLOSING_BRACKET(")", ')', 1, 0, false),
+    OPENING_BRACKET("(", '(', 0, 0, false),
+    LOGARITHM_N("ln", 'n', 3, 1, true),
+    LOGARITHM("log", 'l', 3, 1, true),
+    SIN("sin", 's', 3, 1, true),
+    COS("cos", 'c', 3, 1, true),
+    TAN("tan", 't', 3, 1, true),
+    FACTORIAL("!", '!', 4, 1, false),
+    POWER("^", '^', 4, 2, true),
+    SQUARE_ROOT("√", '√', 3, 1, true),
+    PERCENT("%", '%', 4, 2, false),
+    DEFAULT(" ", ' ', -1, 0, false);
 
     private final String operator;
     private final Character tag;
     private final int priority;
     private final int required;
+    private final boolean withOpeningBracket;
 
-    OperatorEnum(String operator, Character tag, int priority, int required) {
+    OperatorEnum(String operator, Character tag, int priority, int required, boolean withOpeningBracket) {
         this.operator = operator;
         this.tag = tag;
         this.priority = priority;
         this.required = required;
+        this.withOpeningBracket = withOpeningBracket;
     }
 
     public static OperatorEnum valueOf2(Character value) {
@@ -46,7 +48,8 @@ public enum OperatorEnum {
     public static boolean isOperator(Character value) {
         for (OperatorEnum o : OperatorEnum.values())
             if (o.tag.equals(value))
-                if (!value.equals(OPENING_BRACKET.toCharacter()) && !value.equals(CLOSING_BRACKET.toCharacter()))
+                if (!value.equals(OPENING_BRACKET.toCharacter()) && !value.equals(CLOSING_BRACKET.toCharacter())
+                        && !value.equals(PERCENT.toCharacter()) && !value.equals(FACTORIAL.toCharacter()))
                     return true;
         return false;
     }
@@ -65,6 +68,14 @@ public enum OperatorEnum {
             return true;
         }
         return operator1.priority > operator2.priority;
+    }
+
+    public static boolean deleteOperator(Character operator){
+        return valueOf2(operator).isWithOpeningBracket();
+    }
+
+    public boolean isWithOpeningBracket() {
+        return withOpeningBracket;
     }
 
     public Character toCharacter() {

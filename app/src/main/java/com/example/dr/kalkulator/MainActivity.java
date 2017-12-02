@@ -88,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 if (exp.length() == 1 && exp.toString().equals("0"))
                     exp.setLength(0);
                 else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
-                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET))
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL))
                     exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
                 exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
                 openingBracketCount++;
@@ -96,16 +98,32 @@ public class MainActivity extends AppCompatActivity {
             case POWER:
                 checkLastChar(OperatorEnum.POWER);
                 exp.append(OperatorEnum.POWER.toCharacter());
+                exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
+                openingBracketCount++;
                 break;
             case SQUARE_ROOT:
                 if (exp.length() == 1 && exp.toString().equals("0"))
                     exp.setLength(0);
                 else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
-                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET))
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL))
                     exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
                 exp.append(OperatorEnum.SQUARE_ROOT.toCharacter());
                 exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
                 openingBracketCount++;
+                break;
+            case PERCENT:
+                if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)) {
+                    exp.append(OperatorEnum.PERCENT.toCharacter());
+                }
+                break;
+            case FACTORIAL:
+                if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
+                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)) {
+                    exp.append(OperatorEnum.FACTORIAL.toCharacter());
+                }
                 break;
             default:
                 Log.d("onClickOperator", "Brak operatora.");
@@ -121,6 +139,17 @@ public class MainActivity extends AppCompatActivity {
         if (exp.length() == 1 && exp.toString().equals("0")) {
             exp.setLength(0);
         } else if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals('π') || ((Character) exp.charAt(exp.length() - 1)).equals('e')) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        } else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
+                && (((Character) b.getText().charAt(0)).equals('π') || ((Character) b.getText().charAt(0)).equals('e'))) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        }
+        if (exp.length() > 0 && OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        }
+        if (exp.length() > 0 && OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL)) {
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         }
         exp.append(b.getText());
@@ -153,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
             exp.append("0");
         } else if (OperatorEnum.isOperator(exp.charAt(exp.length() - 1))) {
             isCommaInLastValue = false;
+            if (OperatorEnum.deleteOperator(exp.charAt(exp.length() - 1))) {
+                exp.deleteCharAt(exp.length() - 1);
+            }
         } else {
             for (int i = exp.length(); i > 1; i--) {
                 Character s = exp.charAt(i - 1);
@@ -165,12 +197,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        if (exp.length() == 0) {
+            exp.append("0");
+        }
         updateExpression();
     }
 
     public void onClickComma(View view) {
         if (OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))) {
-            if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter()))
+            if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())
+                    || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)
+                    || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL))
                 exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
             exp.append("0");
         }
@@ -228,7 +265,9 @@ public class MainActivity extends AppCompatActivity {
         int localOpeningBracketCount = openingBracketCount;
         if (OperatorEnum.isOperatorWithBracket(stringExp.charAt(stringExp.length() - 1))) {
             while (OperatorEnum.isOperatorWithBracket(stringExp.charAt(stringExp.length() - 1))
-                    && !OperatorEnum.CLOSING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
+                    && !OperatorEnum.CLOSING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))
+                    && !OperatorEnum.PERCENT.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))
+                    && !OperatorEnum.FACTORIAL.toCharacter().equals(stringExp.charAt(stringExp.length() - 1))) {
                 if (OperatorEnum.OPENING_BRACKET.toCharacter().equals(stringExp.charAt(stringExp.length() - 1)))
                     localOpeningBracketCount--;
                 stringExp.deleteCharAt(stringExp.length() - 1);

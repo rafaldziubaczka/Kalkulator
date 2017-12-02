@@ -2,6 +2,8 @@ package com.example.dr.kalkulator;
 
 import android.util.Log;
 
+import org.apache.commons.math3.special.Gamma;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -38,15 +40,14 @@ public class Calculator {
         for (String item : convertExpToStringList(exp)) {
             if (item.length() == 1 && OperatorEnum.isOperatorWithBracket(item.charAt(0))) {
                 if (!operators.isEmpty()) {
-                    String operstorsFromStack = operators.pop();
-                    operators.push(operstorsFromStack);
-                    if (!OperatorEnum.higherPriority(item, operstorsFromStack)){
-                        if(OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0)))
+                    String operstorsFromStack = operators.peek();
+                    if (!OperatorEnum.higherPriority(item, operstorsFromStack)) {
+                        if (OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0)))
                             operators.push(item);
                         calc();
                     }
-                    if(!OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0))
-                            || OperatorEnum.OPENING_BRACKET.toCharacter().equals(operstorsFromStack.charAt(0))){
+                    if (!OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0))
+                            || OperatorEnum.OPENING_BRACKET.toCharacter().equals(operstorsFromStack.charAt(0))) {
                         operators.push(item);
                         if (OperatorEnum.CLOSING_BRACKET.toCharacter().equals(item.charAt(0)))
                             calc();
@@ -55,9 +56,11 @@ public class Calculator {
                     operators.push(item);
                 }
             } else {
-                if(item.equals("π")){
+                if (item.equals("π")) {
                     numbers.push(Math.PI);
-                } else{
+                } else if (item.equals("e")) {
+                    numbers.push(Math.E);
+                } else {
                     numbers.push(Double.valueOf(item));
                 }
             }
@@ -98,17 +101,37 @@ public class Calculator {
                 break;
             case POWER:
                 result = numbers.pop();
-                result = Math.pow(numbers.pop(),result);
+                result = Math.pow(numbers.pop(), result);
                 break;
             case SQUARE_ROOT:
                 result = Math.sqrt(numbers.pop());
+                break;
+            case PERCENT:
+                if (numbers.size() == 1) {
+                    result = numbers.pop() / 100;
+                } else {
+                    double perc = numbers.pop();
+                    double number = numbers.peek();
+                    result = number * perc / 100;
+                }
+                break;
+            case FACTORIAL:
+                result = Gamma.gamma(numbers.pop() + 1);
                 break;
             default:
                 Log.d("calc", "Brak operatora.Błąd obliczenia.");
                 break;
         }
-        if(!operator.equals(OperatorEnum.CLOSING_BRACKET))
+        if (!operator.equals(OperatorEnum.CLOSING_BRACKET))
             numbers.push(result);
+    }
+
+    private static double factorial(double value) {
+        double result = value - Math.floor(value) + 1;
+        for (; value > 1; value -= 1) {
+            result *= value;
+        }
+        return result;
     }
 
     private static List<String> convertExpToStringList(String exp) {
