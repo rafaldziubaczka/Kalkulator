@@ -117,10 +117,11 @@
                     android:layout_marginLeft="-3dp"
                     android:layout_marginRight="-3dp"
                     android:layout_weight=".25"
-                    android:onClick="onClickClear"
-                    android:text="C"
+                    android:onClick="onClickOperator"
+                    android:text="Abs"
                     android:textSize="25dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:tag="a"/>
 
             </LinearLayout>
 

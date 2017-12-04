@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.apache.commons.math3.special.Gamma;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -22,7 +23,7 @@ public class Calculator {
     public static void setStack() {
         numbers = new Stack<>();
         operators = new Stack<>();
-        rad = true;
+        rad = false;
     }
 
 
@@ -56,13 +57,7 @@ public class Calculator {
                     operators.push(item);
                 }
             } else {
-                if (item.equals("π")) {
-                    numbers.push(Math.PI);
-                } else if (item.equals("e")) {
-                    numbers.push(Math.E);
-                } else {
-                    numbers.push(Double.valueOf(item));
-                }
+                addNumberToStack(item);
             }
         }
         while (!operators.isEmpty()) {
@@ -118,12 +113,66 @@ public class Calculator {
             case FACTORIAL:
                 result = Gamma.gamma(numbers.pop() + 1);
                 break;
+            case LOGARITHM:
+                result = Math.log10(numbers.pop());
+                break;
+            case LOGARITHM_N:
+                result = Math.log(numbers.pop());
+                break;
+            case SIN:
+                result = round15(Math.sin(getRadOrDeg()));
+                break;
+            case COS:
+                result = round15(Math.cos(getRadOrDeg()));
+                break;
+            case TAN:
+                result = getRadOrDeg();
+                result = (result / Math.PI - (int) (result / Math.PI)) != 0.5 ? round15(Math.tan(result)) : Double.POSITIVE_INFINITY;
+                break;
+            case ABSOLUTE_VALUE:
+                result = Math.abs(numbers.pop());
+                break;
             default:
                 Log.d("calc", "Brak operatora.Błąd obliczenia.");
                 break;
         }
         if (!operator.equals(OperatorEnum.CLOSING_BRACKET))
             numbers.push(result);
+    }
+
+    private static double round15(double x) {
+//        if(!rad){
+        DecimalFormat twoDForm = new DecimalFormat("0.##############E0");
+        String str = twoDForm.format(x + 1);
+        str = str.replace(",", ".");
+        return Double.valueOf(str) - 1;
+//        }
+//        return x;
+    }
+
+    private static void addNumberToStack(String number) {
+        if (number.contains("π")) {
+            if (number.length() == 1) {
+                numbers.push(Math.PI);
+            } else {
+                numbers.push(Math.PI * -1);
+            }
+        } else if (number.contains("e")) {
+            if (number.length() == 1) {
+                numbers.push(Math.E);
+            } else {
+                numbers.push(Math.E * -1);
+            }
+        } else {
+            numbers.push(Double.valueOf(number));
+        }
+    }
+
+    private static double getRadOrDeg() {
+        if (rad)
+            return Math.toRadians(numbers.pop());
+        else
+            return numbers.pop();
     }
 
     private static double factorial(double value) {

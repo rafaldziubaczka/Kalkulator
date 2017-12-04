@@ -102,16 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 openingBracketCount++;
                 break;
             case SQUARE_ROOT:
-                if (exp.length() == 1 && exp.toString().equals("0"))
-                    exp.setLength(0);
-                else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
-                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)
-                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)
-                        || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL))
-                    exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
-                exp.append(OperatorEnum.SQUARE_ROOT.toCharacter());
-                exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
-                openingBracketCount++;
+                setFunctionsOperator(OperatorEnum.SQUARE_ROOT);
                 break;
             case PERCENT:
                 if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
@@ -124,6 +115,24 @@ public class MainActivity extends AppCompatActivity {
                         || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)) {
                     exp.append(OperatorEnum.FACTORIAL.toCharacter());
                 }
+                break;
+            case LOGARITHM:
+                setFunctionsOperator(OperatorEnum.LOGARITHM);
+                break;
+            case LOGARITHM_N:
+                setFunctionsOperator(OperatorEnum.LOGARITHM_N);
+                break;
+            case SIN:
+                setFunctionsOperator(OperatorEnum.SIN);
+                break;
+            case COS:
+                setFunctionsOperator(OperatorEnum.COS);
+                break;
+            case TAN:
+                setFunctionsOperator(OperatorEnum.TAN);
+                break;
+            case ABSOLUTE_VALUE:
+                setFunctionsOperator(OperatorEnum.ABSOLUTE_VALUE);
                 break;
             default:
                 Log.d("onClickOperator", "Brak operatora.");
@@ -304,6 +313,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setFunctionsOperator(OperatorEnum operator){
+        if (exp.length() == 1 && exp.toString().equals("0"))
+            exp.setLength(0);
+        else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
+                || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET)
+                || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)
+                || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL))
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        exp.append(operator.toCharacter());
+        exp.append(OperatorEnum.OPENING_BRACKET.toCharacter());
+        openingBracketCount++;
+    }
+
     public void setButtons() {
         addition = (Button) findViewById(R.id.bAddition);
         subtraction = (Button) findViewById(R.id.bSubtraction);
@@ -342,10 +364,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickChangeRad(View view) {
         Calculator.setRad(!Calculator.isRad());
-        if (Calculator.isRad()) {
+        if (!Calculator.isRad()) {
             rad.setText("Rad");
         } else {
             rad.setText("Deg");
         }
+        updateExpression();
     }
 }
