@@ -296,10 +296,10 @@
                     android:layout_marginLeft="-3dp"
                     android:layout_marginRight="-3dp"
                     android:layout_weight=".25"
-                    android:onClick="onClickComma"
+                    android:onClick="onClickNumber"
                     android:text="EXP"
                     android:textSize="25dp"
-                    android:tag="x"/>
+                    android:tag="E"/>
 
                 <Button
                     android:id="@+id/bResult"

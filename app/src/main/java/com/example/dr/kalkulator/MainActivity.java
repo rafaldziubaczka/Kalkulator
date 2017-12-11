@@ -16,12 +16,16 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ResultRepo resultRepo;
+    private HistoryRepo historyRepo;
+
     StringBuilder exp;
     TextView expression;
     TextView result;
 
     boolean lastCharIsOperator = false;
     boolean isCommaInLastValue = false;
+    boolean isScientificNotation = false;
 
     Button addition;
     Button subtraction;
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        resultRepo = new ResultRepo(this);
+        historyRepo = new HistoryRepo(this);
         setContentView(R.layout.activity_main);
         expression = (TextView) findViewById(R.id.expression);
         result = (TextView) findViewById(R.id.result);
@@ -53,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickOperator(View view) {
-        if (exp.substring(exp.length() - 1).equals(",")) {
+        if (((Character) exp.charAt(exp.length() - 1)).equals(',')) {
             exp.append("0");
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals('E')) {
+            exp.append("1");
         }
         Button b = (Button) view;
         switch (OperatorEnum.valueOf2(b.getTag().toString().charAt(0))) {
@@ -140,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         }
         isCommaInLastValue = false;
         lastCharIsOperator = true;
+        isScientificNotation = false;
         updateExpression();
     }
 
@@ -147,12 +156,17 @@ public class MainActivity extends AppCompatActivity {
         Button b = (Button) view;
         if (exp.length() == 1 && exp.toString().equals("0")) {
             exp.setLength(0);
+            if (b.getTag() != null && b.getTag().equals("E") && !isScientificNotation)
+                exp.append("1");
         } else if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())) {
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         } else if (((Character) exp.charAt(exp.length() - 1)).equals('π') || ((Character) exp.charAt(exp.length() - 1)).equals('e')) {
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         } else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
                 && (((Character) b.getText().charAt(0)).equals('π') || ((Character) b.getText().charAt(0)).equals('e'))) {
+            if (((Character) exp.charAt(exp.length() - 1)).equals('E')) {
+                exp.append("1");
+            }
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         }
         if (exp.length() > 0 && OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.PERCENT)) {
@@ -161,7 +175,17 @@ public class MainActivity extends AppCompatActivity {
         if (exp.length() > 0 && OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL)) {
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         }
-        exp.append(b.getText());
+        if(exp.length() > 0 && OperatorEnum.MULTIPLICATION.toCharacter().equals(((Character) exp.charAt(exp.length() - 1)))){
+            isScientificNotation = false;
+        }
+        if (b.getTag() != null && b.getTag().equals("E") && !isScientificNotation) {
+            if (OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1)))
+                exp.append("1");
+            exp.append(b.getTag());
+            isScientificNotation = true;
+        } else {
+            exp.append(b.getText());
+        }
         lastCharIsOperator = false;
         updateExpression();
     }
@@ -171,10 +195,10 @@ public class MainActivity extends AppCompatActivity {
         exp.append("0");
         isCommaInLastValue = false;
         lastCharIsOperator = false;
+        isScientificNotation = false;
         openingBracketCount = 0;
         closingBracketCount = 0;
         updateExpression();
-//        System.gc();
     }
 
     public void onClickBack(View view) {
@@ -182,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
             isCommaInLastValue = false;
         } else if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.OPENING_BRACKET.toCharacter())) {
             openingBracketCount--;
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals('E')) {
+            isScientificNotation = false;
         }
         if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())) {
             closingBracketCount--;
@@ -199,11 +225,15 @@ public class MainActivity extends AppCompatActivity {
                 Character s = exp.charAt(i - 1);
                 if (s.equals(',')) {
                     isCommaInLastValue = true;
-                    break;
+                } else if (s.equals('E')) {
+                    isScientificNotation = true;
                 } else if (OperatorEnum.isOperator(s)) {
                     isCommaInLastValue = false;
+                    isScientificNotation = false;
                     break;
                 }
+                if (isCommaInLastValue && isScientificNotation)
+                    break;
             }
         }
         if (exp.length() == 0) {
@@ -219,11 +249,14 @@ public class MainActivity extends AppCompatActivity {
                     || OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL))
                 exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
             exp.append("0");
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals('π') || ((Character) exp.charAt(exp.length() - 1)).equals('e')) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+            exp.append("0");
         }
-        if (!isCommaInLastValue) {
+        if (!isCommaInLastValue && !isScientificNotation) {
             exp.append(",");
+            isCommaInLastValue = true;
         }
-        isCommaInLastValue = true;
         updateExpression();
     }
 
@@ -299,21 +332,28 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //            if (stringExp.length() > 2)
 //                stringExp.deleteCharAt(stringExp.length() - 1);
-        } else if (((Character) stringExp.charAt(stringExp.length() - 1)).equals(','))
+        } else if (((Character) stringExp.charAt(stringExp.length() - 1)).equals(',')) {
             stringExp.append("0");
+        } else if (((Character) stringExp.charAt(stringExp.length() - 1)).equals('E')) {
+            stringExp.append("1");
+        }
+
         int count = localOpeningBracketCount - closingBracketCount;
         while (count > 0) {
             stringExp.append(OperatorEnum.CLOSING_BRACKET.toCharacter());
             count--;
         }
-        this.result.setText(Calculator.calculate(stringExp.toString()).toString());
+        Double score = Calculator.calculate(stringExp.toString());
+        this.result.setText(score.toString());
         if (result) {
             exp = stringExp;
             closingBracketCount = openingBracketCount;
+            resultRepo.insert(new Result("result: " + score.toString(), score));
+            historyRepo.insert(new History(stringExp.toString(), score));
         }
     }
 
-    public void setFunctionsOperator(OperatorEnum operator){
+    public void setFunctionsOperator(OperatorEnum operator) {
         if (exp.length() == 1 && exp.toString().equals("0"))
             exp.setLength(0);
         else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))

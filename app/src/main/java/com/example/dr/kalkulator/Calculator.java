@@ -102,7 +102,7 @@ public class Calculator {
                 result = Math.sqrt(numbers.pop());
                 break;
             case PERCENT:
-                if (numbers.size() == 1) {
+                if (numbers.size() == 1 || OperatorEnum.OPENING_BRACKET.toCharacter().equals(operators.peek().charAt(0))) {
                     result = numbers.pop() / 100;
                 } else {
                     double perc = numbers.pop();
