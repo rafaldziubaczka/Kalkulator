@@ -38,7 +38,7 @@ public class HistoryRepo {
         db.close();
     }
 
-    public Long count(){
+    public Long count() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Long count = DatabaseUtils.queryNumEntries(db, History.TABLE);
         db.close();
@@ -51,7 +51,10 @@ public class HistoryRepo {
                 History.KEY_ID + "," +
                 History.KEY_expression + "," +
                 History.KEY_result +
-                " FROM " + History.TABLE;
+                " FROM " + History.TABLE +
+                " ORDER BY " +
+                History.KEY_ID +
+                " DESC;";
 
         List<History> historyList = new ArrayList<>();
 
@@ -62,7 +65,7 @@ public class HistoryRepo {
                 History history = new History();
                 history.setId(cursor.getLong(cursor.getColumnIndex(History.KEY_ID)));
                 history.setExpression(cursor.getString(cursor.getColumnIndex(History.KEY_expression)));
-                history.setResult(cursor.getDouble(cursor.getColumnIndex(History.KEY_result)));
+                history.setResult(cursor.getString(cursor.getColumnIndex(History.KEY_result)));
                 historyList.add(history);
 
             } while (cursor.moveToNext());
@@ -70,5 +73,59 @@ public class HistoryRepo {
         cursor.close();
         db.close();
         return historyList;
+    }
+
+    public Long getFirstId() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery = "SELECT  " +
+                History.KEY_ID +
+                " FROM " + History.TABLE +
+                " LIMIT 1;";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            Long id = cursor.getLong(cursor.getColumnIndex(History.KEY_ID));
+            cursor.close();
+            db.close();
+            return id;
+        }
+        return null;
+    }
+
+    public History getLast() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery = "SELECT  " +
+                History.KEY_ID + "," +
+                History.KEY_expression + "," +
+                History.KEY_result +
+                " FROM " + History.TABLE +
+                " ORDER BY " +
+                History.KEY_ID +
+                " DESC LIMIT 1;";
+
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        History history = new History();
+        if (cursor.moveToFirst()) {
+
+            history.setId(cursor.getLong(cursor.getColumnIndex(History.KEY_ID)));
+            history.setExpression(cursor.getString(cursor.getColumnIndex(History.KEY_expression)));
+            history.setResult(cursor.getString(cursor.getColumnIndex(History.KEY_result)));
+            cursor.close();
+            db.close();
+            return history;
+        }
+        return null;
+    }
+
+    public void insertWithoutSame(History history) {
+        History lastHistry = getLast();
+        if(lastHistry == null || !(history.equals(lastHistry))){
+            insert(history);
+        }
+        if(count()> 20){
+            delete(getFirstId());
+        }
     }
 }

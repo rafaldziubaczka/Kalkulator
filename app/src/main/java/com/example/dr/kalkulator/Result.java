@@ -13,12 +13,12 @@ public class Result {
 
     private Long id;
     private String name;
-    private Double value;
+    private String value;
 
     public Result(){
     }
 
-    public Result(String name, Double value){
+    public Result(String name, String value){
         this.name = name;
         this.value = value;
     }
@@ -39,11 +39,11 @@ public class Result {
         this.name = name;
     }
 
-    public Double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

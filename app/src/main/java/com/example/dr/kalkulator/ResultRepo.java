@@ -74,7 +74,7 @@ public class ResultRepo {
                 Result result = new Result();
                 result.setId(cursor.getLong(cursor.getColumnIndex(Result.KEY_ID)));
                 result.setName(cursor.getString(cursor.getColumnIndex(Result.KEY_name)));
-                result.setValue(cursor.getDouble(cursor.getColumnIndex(Result.KEY_value)));
+                result.setValue(cursor.getString(cursor.getColumnIndex(Result.KEY_value)));
                 resultList.add(result);
 
             } while (cursor.moveToNext());

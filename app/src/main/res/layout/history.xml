@@ -4,68 +4,16 @@
     android:layout_height="match_parent"
     android:id="@+id/LHistory">
 
-    <LinearLayout
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="History"
+    android:gravity="center"
+    android:textSize="20dp"/>
+
+    <ListView
+        android:id="@+id/listHistory"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-5dp"
-        android:layout_marginTop="-5dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight=".25"
-            android:layout_marginRight="-3dp"
-            android:layout_marginLeft="-3dp"
-            android:id="@+id/bNumbers4"
-            android:text="N"
-            android:textStyle="bold"
-            android:textSize="25dp"
-            android:onClick="onClickNumbers" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight=".25"
-            android:layout_marginRight="-3dp"
-            android:layout_marginLeft="-3dp"
-            android:id="@+id/bFunctions4"
-            android:text="F"
-            android:textStyle="bold"
-            android:textSize="25dp"
-            android:onClick="onClickFunctions"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight=".25"
-            android:layout_marginRight="-3dp"
-            android:layout_marginLeft="-3dp"
-            android:id="@+id/bSave4"
-            android:text="S"
-            android:textStyle="bold"
-            android:textSize="25dp"
-            android:onClick="onClickSave"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight=".25"
-            android:layout_marginRight="-3dp"
-            android:layout_marginLeft="-3dp"
-            android:id="@+id/bHistory4"
-            android:text="H"
-            android:textStyle="bold"
-            android:textSize="25dp"
-            android:onClick="onClickHistory"
-            android:backgroundTint="@color/colorPrimary"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Historia!!!!"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

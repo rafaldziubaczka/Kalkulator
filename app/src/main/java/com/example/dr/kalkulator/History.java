@@ -13,14 +13,20 @@ public class History {
 
     private Long id;
     private String expression;
-    private Double result;
+    private String result;
 
     public History(){
     }
 
-    public History(String expression, Double result){
+    public History(String expression, String result){
         this.expression = expression;
         this.result = result;
+    }
+
+    public boolean equals(History history) {
+        if(this.expression.equals(history.expression) && this.result.equals(history.result))
+            return true;
+        return false;
     }
 
     public Long getId() {
@@ -39,11 +45,11 @@ public class History {
         this.expression = expression;
     }
 
-    public Double getResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(Double result) {
+    public void setResult(String result) {
         this.result = result;
     }
 }

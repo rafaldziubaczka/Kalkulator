@@ -10,19 +10,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
 
     private static final String DATABASE_NAME = "db.db";
 
     String CREATE_TABLE_RESULT = "CREATE TABLE " + Result.TABLE  + "("
             + Result.KEY_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
             + Result.KEY_name + " TEXT, "
-            + Result.KEY_value + " DOUBLE )";
+            + Result.KEY_value + " TEXT )";
 
     String CREATE_TABLE_HISTORY = "CREATE TABLE " + History.TABLE  + "("
             + History.KEY_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
             + History.KEY_expression + " TEXT, "
-            + History.KEY_result + " DOUBLE )";
+            + History.KEY_result + " TEXT )";
 
     public DBHelper(Context context ) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

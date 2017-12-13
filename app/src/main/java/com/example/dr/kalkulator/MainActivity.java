@@ -1,18 +1,31 @@
 package com.example.dr.kalkulator;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import java.util.Stack;
 import java.util.regex.Pattern;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -163,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (((Character) exp.charAt(exp.length() - 1)).equals('π') || ((Character) exp.charAt(exp.length() - 1)).equals('e')) {
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         } else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))
-                && (((Character) b.getText().charAt(0)).equals('π') || ((Character) b.getText().charAt(0)).equals('e'))) {
+                && (((Character) b.getText().charAt(0)).equals('π') || ((Character) b.getText().charAt(0)).equals('e') || ((Character) b.getText().charAt(0)).equals('E'))) {
             if (((Character) exp.charAt(exp.length() - 1)).equals('E')) {
                 exp.append("1");
             }
@@ -175,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         if (exp.length() > 0 && OperatorEnum.valueOf2(exp.charAt(exp.length() - 1)).equals(OperatorEnum.FACTORIAL)) {
             exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
         }
-        if(exp.length() > 0 && OperatorEnum.MULTIPLICATION.toCharacter().equals(((Character) exp.charAt(exp.length() - 1)))){
+        if (exp.length() > 0 && OperatorEnum.MULTIPLICATION.toCharacter().equals(((Character) exp.charAt(exp.length() - 1)))) {
             isScientificNotation = false;
         }
         if (b.getTag() != null && b.getTag().equals("E") && !isScientificNotation) {
@@ -348,8 +361,8 @@ public class MainActivity extends AppCompatActivity {
         if (result) {
             exp = stringExp;
             closingBracketCount = openingBracketCount;
-            resultRepo.insert(new Result("result: " + score.toString(), score));
-            historyRepo.insert(new History(stringExp.toString(), score));
+//            resultRepo.insert(new Result("result: " + score.toString(), score));
+            historyRepo.insertWithoutSame(new History(convertToView(exp.toString()), score.toString()));
         }
     }
 
@@ -380,7 +393,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickHistory(View view) {
-        viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LHistory))));
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        View vHistory = getLayoutInflater().inflate(R.layout.history, null);
+        ListView listHistory = (ListView) vHistory.findViewById(R.id.listHistory);
+        listHistory.setAdapter(new ListHistoryAdapter(this, R.layout.list_history_item, historyRepo.getHistoryList()));
+        builder.setView(vHistory);
+        final AlertDialog alertDialogHistory = builder.create();
+        alertDialogHistory.show();
+        listHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                alertDialogHistory.dismiss();
+            }
+        });
     }
 
     public void onClickSave(View view) {
