@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.Stack;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder exp;
     TextView expression;
     TextView result;
+
+    Double score;
 
     boolean lastCharIsOperator = false;
     boolean isCommaInLastValue = false;
@@ -255,6 +258,33 @@ public class MainActivity extends AppCompatActivity {
         updateExpression();
     }
 
+    public  void addSaveValue(String saveValue){
+        if (exp.length() == 1 && exp.toString().equals("0")) {
+            exp.setLength(0);
+        } else if (((Character) exp.charAt(exp.length() - 1)).equals('π') || ((Character) exp.charAt(exp.length() - 1)).equals('e')) {
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        } else if (!OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1)) || OperatorEnum.CLOSING_BRACKET.toCharacter().equals(exp.charAt(exp.length() - 1))){
+            if (((Character) exp.charAt(exp.length() - 1)).equals(',')) {
+                exp.append("0");
+            } else if (((Character) exp.charAt(exp.length() - 1)).equals('E')) {
+                exp.append("1");
+            }
+            exp.append(OperatorEnum.MULTIPLICATION.toCharacter());
+        }
+        for (int i = saveValue.length(); i > 1; i--) {
+            Character s = saveValue.charAt(i - 1);
+            if (s.equals(',')) {
+                isCommaInLastValue = true;
+            } else if (s.equals('E')) {
+                isScientificNotation = true;
+            }
+            if (isCommaInLastValue && isScientificNotation)
+                break;
+        }
+        exp.append(saveValue);
+        updateExpression();
+    }
+
     public void onClickComma(View view) {
         if (OperatorEnum.isOperatorWithBracket(exp.charAt(exp.length() - 1))) {
             if (((Character) exp.charAt(exp.length() - 1)).equals(OperatorEnum.CLOSING_BRACKET.toCharacter())
@@ -356,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
             stringExp.append(OperatorEnum.CLOSING_BRACKET.toCharacter());
             count--;
         }
-        Double score = Calculator.calculate(stringExp.toString());
+        score = Calculator.calculate(stringExp.toString());
         this.result.setText(score.toString());
         if (result) {
             exp = stringExp;
@@ -409,7 +439,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickSave(View view) {
-        viewFlipper.setDisplayedChild((viewFlipper.indexOfChild(findViewById(R.id.LSave))));
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        View vSave = getLayoutInflater().inflate(R.layout.save, null);
+        ListView listSave = (ListView) vSave.findViewById(R.id.listSave);
+        listSave.setAdapter(new ListSaveAdapter(this, R.layout.list_save_item, resultRepo.getResultList()));
+        Button saveButton = (Button)vSave.findViewById(R.id.bSaveValue);
+        builder.setView(vSave);
+        final AlertDialog alertDialogSave = builder.create();
+        alertDialogSave.show();
+        listSave.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String value = ((TextView) view.findViewById(R.id.ItemSaveValue)).getText().toString();
+                addSaveValue(value.replace(".",","));
+                alertDialogSave.dismiss();
+            }
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                final View vSaveSave = getLayoutInflater().inflate(R.layout.save_value, null);
+                TextView v1 = (TextView)vSaveSave.findViewById(R.id.saveValue);
+                v1.setText(score.toString());
+                final Button saveButton = (Button)vSaveSave.findViewById(R.id.bSaveSaveValue);
+                builder1.setView(vSaveSave);
+                final AlertDialog alertDialogSaveSave = builder1.create();
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText et = (EditText)vSaveSave.findViewById(R.id.saveValueName);
+                        String valueName = score.toString();
+                        if(!et.getText().toString().isEmpty())
+                            valueName = et.getText().toString();
+                        resultRepo.insertWithCheck(new Result(valueName,score.toString()));
+                        Toast.makeText(getApplicationContext(),"Save value: "+valueName,Toast.LENGTH_SHORT).show();
+                        alertDialogSave.dismiss();
+                        alertDialogSaveSave.dismiss();
+                    }
+                });
+                alertDialogSaveSave.show();
+            }
+        });
+        Button saveBack = (Button)vSave.findViewById(R.id.bBackSave);
+        saveBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialogSave.dismiss();
+            }
+        });
     }
 
     public void onClickFunctions(View view) {

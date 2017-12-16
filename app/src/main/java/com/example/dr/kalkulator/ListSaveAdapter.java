@@ -1,6 +1,5 @@
 package com.example.dr.kalkulator;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,9 +15,9 @@ import java.util.List;
  * Created by DR on 12.12.2017.
  */
 
-public class ListHistoryAdapter extends ArrayAdapter<History> {
+public class ListSaveAdapter extends ArrayAdapter<Result> {
 
-    public ListHistoryAdapter(Context context, int resource, List<History> items) {
+    public ListSaveAdapter(Context context, int resource, List<Result> items) {
         super(context, resource, items);
     }
 
@@ -30,21 +29,21 @@ public class ListHistoryAdapter extends ArrayAdapter<History> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.list_history_item, null);
+            v = vi.inflate(R.layout.list_save_item, null);
         }
 
-        History history = getItem(position);
+        Result result = getItem(position);
 
-        if (history != null) {
-            TextView exp = (TextView) v.findViewById(R.id.ItemHistoryExp);
-            TextView result = (TextView) v.findViewById(R.id.ItemHistoryResult);
+        if (result != null) {
+            TextView name = (TextView) v.findViewById(R.id.ItemSaveName);
+            TextView value = (TextView) v.findViewById(R.id.ItemSaveValue);
 
-            if (exp != null) {
-                exp.setText(history.getExpression());
+            if (name != null) {
+                name.setText(result.getName()+":");
             }
 
-            if (result != null) {
-                result.setText(history.getResult().toString());
+            if (value != null) {
+                value.setText(result.getValue());
             }
         }
 

@@ -57,13 +57,16 @@ public class ResultRepo {
         return count;
     }
 
-    public List<Result> getStudentList() {
+    public List<Result> getResultList() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery = "SELECT  " +
                 Result.KEY_ID + "," +
                 Result.KEY_name + "," +
                 Result.KEY_value +
-                " FROM " + Result.TABLE;
+                " FROM " + Result.TABLE +
+                " ORDER BY " +
+                Result.KEY_ID +
+                " DESC;";
 
         List<Result> resultList = new ArrayList<>();
 
@@ -82,5 +85,60 @@ public class ResultRepo {
         cursor.close();
         db.close();
         return resultList;
+    }
+
+    public List<Result> getResultByPosition() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery = "SELECT  " +
+                Result.KEY_ID + "," +
+                Result.KEY_name + "," +
+                Result.KEY_value +
+                " FROM " + Result.TABLE +
+                " ORDER BY " +
+                Result.KEY_ID +
+                " DESC;";
+
+        List<Result> resultList = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Result result = new Result();
+                result.setId(cursor.getLong(cursor.getColumnIndex(Result.KEY_ID)));
+                result.setName(cursor.getString(cursor.getColumnIndex(Result.KEY_name)));
+                result.setValue(cursor.getString(cursor.getColumnIndex(Result.KEY_value)));
+                resultList.add(result);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return resultList;
+    }
+
+    public Long getFirstId() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery = "SELECT  " +
+                Result.KEY_ID +
+                " FROM " + Result.TABLE +
+                " LIMIT 1;";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            Long id = cursor.getLong(cursor.getColumnIndex(History.KEY_ID));
+            cursor.close();
+            db.close();
+            return id;
+        }
+        return null;
+    }
+
+    public void insertWithCheck(Result result) {
+        insert(result);
+        if(count()> 10){
+            delete(getFirstId());
+        }
     }
 }
