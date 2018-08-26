@@ -26,6 +26,13 @@ public class Calculator {
         rad = false;
     }
 
+    public static Stack<Double> getNumbers() {
+        return numbers;
+    }
+
+    public static Stack<String> getOperators() {
+        return operators;
+    }
 
     public static boolean isRad() {
         return rad;
